@@ -101,18 +101,51 @@ extension ScanListController: BLEDiscoveryManagerDelegate {
         }
     }
     
+    func uniq<S : Sequence, T : Hashable>(source: S) -> [T] where S.Iterator.Element == T {
+        var buffer = [T]()
+        var added = Set<T>()
+        for elem in source {
+            if !added.contains(elem) {
+                buffer.append(elem)
+                added.insert(elem)
+            }
+        }
+        return buffer
+    }
+    
+    func isKeyPresentInUserDefaults(key: String) -> Bool {
+        return UserDefaults.standard.object(forKey: key) != nil
+    }
+    
     func didDiscover(peripheral: CBPeripheral, advertisementData: [String : Any], rssi: NSNumber) {
+       
+         // self.discoveredDevices.removeAll()
         for index in 0..<self.discoveredDevices.count {
             let device = self.discoveredDevices[index]
             if device.peripheral.identifier.uuidString == peripheral.identifier.uuidString {
                 device.rssi = rssi
-                self.table.reloadRows(at: [IndexPath(item: index, section: 0)], with: .none)
+             //   self.table.reloadRows(at: [IndexPath(item: index, section: 0)], with: .none)
                 return
             }
+            
+            
+            
+            print(device.peripheral.identifier.uuidString)
+            let key =  isKeyPresentInUserDefaults(key: device.peripheral.identifier.uuidString)
+            print(key)
         }
+        
+        UserDefaults.standard.setValue("My Computer", forKey: "B7E552C5-103F-B802-6E6E-DCB040B266A1")
+        
+        print(UserDefaults.standard.string(forKey: "B7E552C5-103F-B802-6E6E-DCB040B266A1") as Any)
+        
+      
         self.discoveredDevices.append(DiscoveredDevice(peripheral: peripheral,
                                                   advertisementData: advertisementData,
                                                   rssi: rssi))
+        
+        
+ 
         self.table.reloadData()
     }
 }
@@ -127,13 +160,42 @@ extension ScanListController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "DeviceCell", for: indexPath) as! DeviceCell
         
-        if(discoveredDevices[indexPath.row].getName() == "Not available") {
+       if(discoveredDevices[indexPath.row].getName() == "Not available") {
             //  fatalError("Unexpected section)")
-        }else {
+       }else {
+      
+        let key =  isKeyPresentInUserDefaults(key: discoveredDevices[indexPath.row].peripheral.identifier.uuidString)
+        print(key)
+        
+        if (key == true){
             
+            cell.nameLbl.text = UserDefaults.standard.string(forKey: discoveredDevices[indexPath.row].peripheral.identifier.uuidString)
+            
+        } else {
             cell.nameLbl.text = discoveredDevices[indexPath.row].getName()
-            cell.identifierLbl.text = discoveredDevices[indexPath.row].peripheral.identifier.uuidString
+        }
+        
+        
+        
+           // cell.identifierLbl.text = discoveredDevices[indexPath.row].peripheral.identifier.uuidString
+        
             cell.rssiLbl.text = "rssi: \(discoveredDevices[indexPath.row].rssi) dBm"
+        
+        switch discoveredDevices[indexPath.row].rssi as! Int {
+        case let x where x <  -90:
+            print("This is far")
+             cell.rssiLbl.text = "Far"
+        case let x where x <  -60:
+            print("This is close")
+             cell.rssiLbl.text = "Close"
+        case let x where x >  -60:
+            print("This is very close")
+            cell.rssiLbl.text = "Very Close"
+        default:
+            print("Not sure")
+        }
+        
+        
             cell.connectBtn.isHidden = !discoveredDevices[indexPath.row].isConnectable()
             
             cell.connectBtnClosure = {
