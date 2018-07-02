@@ -34,12 +34,30 @@ class ScanListController: UIViewController {
         table.dataSource = self
         table.reloadData()
     }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        
+        print("hello")
+        let refresh = UserDefaults.standard.string(forKey: "needsRefresh")
+        
+        if (refresh == "yes"){
+            
+            UserDefaults.standard.setValue("no", forKey: "needsRefresh")
+            self.refresh()
+        }
+    }
 
     // MARK: - Navigation
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "ServicesSegue" {
             if let destination = segue.destination as? ServicesController, let indexPath = sender as? IndexPath {
+                destination.device = discoveredDevices[indexPath.row]
+            }
+        }
+        
+        if segue.identifier == "UpdateSegue" {
+            if let destination = segue.destination as? UpdateController, let indexPath = sender as? IndexPath {
                 destination.device = discoveredDevices[indexPath.row]
             }
         }
@@ -53,10 +71,27 @@ class ScanListController: UIViewController {
             scanButton.title = STOP_SCAN
             table.reloadData()
             BLEDiscoveryManager.shared.startDiscoveryAllPeripherals()
+            _ = Timer.scheduledTimer(timeInterval: 5, target: self, selector: #selector(self.stopScan(_:)), userInfo: nil, repeats: false)
         } else if scanButton.title == STOP_SCAN {
             scanButton.title = START_SCAN
             BLEDiscoveryManager.shared.stopDiscoveryAllPeripherals()
         }
+    }
+    
+    func refresh() {
+      
+            discoveredDevices = [DiscoveredDevice]()
+            scanButton.title = STOP_SCAN
+            table.reloadData()
+            BLEDiscoveryManager.shared.startDiscoveryAllPeripherals()
+            _ = Timer.scheduledTimer(timeInterval: 5, target: self, selector: #selector(self.stopScan(_:)), userInfo: nil, repeats: false)
+       
+    }
+    
+    @objc func stopScan(_ sender: Any) {
+        
+        scanButton.title = START_SCAN
+        BLEDiscoveryManager.shared.stopDiscoveryAllPeripherals()
     }
 
     // MARK: - Private methods
@@ -135,9 +170,9 @@ extension ScanListController: BLEDiscoveryManagerDelegate {
             print(key)
         }
         
-        UserDefaults.standard.setValue("My Computer", forKey: "B7E552C5-103F-B802-6E6E-DCB040B266A1")
+      //  UserDefaults.standard.setValue("My Computer", forKey: "B7E552C5-103F-B802-6E6E-DCB040B266A1")
         
-        print(UserDefaults.standard.string(forKey: "B7E552C5-103F-B802-6E6E-DCB040B266A1") as Any)
+     //   print(UserDefaults.standard.string(forKey: "B7E552C5-103F-B802-6E6E-DCB040B266A1") as Any)
         
       
         self.discoveredDevices.append(DiscoveredDevice(peripheral: peripheral,
@@ -160,9 +195,9 @@ extension ScanListController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "DeviceCell", for: indexPath) as! DeviceCell
         
-       if(discoveredDevices[indexPath.row].getName() == "Not available") {
+      // if(discoveredDevices[indexPath.row].getName() == "Not available") {
             //  fatalError("Unexpected section)")
-       }else {
+     //  }else {
       
         let key =  isKeyPresentInUserDefaults(key: discoveredDevices[indexPath.row].peripheral.identifier.uuidString)
         print(key)
@@ -179,16 +214,18 @@ extension ScanListController: UITableViewDataSource {
         
            // cell.identifierLbl.text = discoveredDevices[indexPath.row].peripheral.identifier.uuidString
         
+        cell.identifierLbl.text = ""
+        
             cell.rssiLbl.text = "rssi: \(discoveredDevices[indexPath.row].rssi) dBm"
         
         switch discoveredDevices[indexPath.row].rssi as! Int {
-        case let x where x <  -90:
+        case let x where x <=  -90:
             print("This is far")
              cell.rssiLbl.text = "Far"
         case let x where x <  -60:
             print("This is close")
              cell.rssiLbl.text = "Close"
-        case let x where x >  -60:
+        case let x where x >=  -60:
             print("This is very close")
             cell.rssiLbl.text = "Very Close"
         default:
@@ -203,10 +240,12 @@ extension ScanListController: UITableViewDataSource {
                 if self.scanButton.title == self.STOP_SCAN {
                     self.scanButton.title = self.START_SCAN
                 }
-                self.performSegue(withIdentifier: "ServicesSegue", sender: indexPath)
+              /*  self.performSegue(withIdentifier: "ServicesSegue", sender: indexPath)
+                */
+                 self.performSegue(withIdentifier: "UpdateSegue", sender: indexPath)
             }
            
-        }
+       // }
 
        
       

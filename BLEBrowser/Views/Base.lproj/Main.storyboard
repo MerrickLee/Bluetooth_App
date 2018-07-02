@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14109" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="UDH-Kz-Eyx">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14113" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="UDH-Kz-Eyx">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
@@ -58,7 +58,7 @@
                                                         <constraint firstAttribute="width" constant="80" id="426-lq-Yav"/>
                                                         <constraint firstAttribute="height" constant="34" id="hCH-V8-hcX"/>
                                                     </constraints>
-                                                    <state key="normal" title="Connect"/>
+                                                    <state key="normal" title="Update"/>
                                                     <connections>
                                                         <action selector="connectBtnTapped:" destination="WgO-r9-EN0" eventType="touchUpInside" id="Ryl-Np-1kT"/>
                                                     </connections>
@@ -110,11 +110,12 @@
                         <outlet property="scanButton" destination="fBi-JJ-fHq" id="LvA-gH-cOJ"/>
                         <outlet property="table" destination="hdb-Bp-Egh" id="HDx-BH-vqK"/>
                         <segue destination="msH-ry-cWT" kind="show" identifier="ServicesSegue" id="vRf-dY-neA"/>
+                        <segue destination="XMu-hn-Tlu" kind="show" identifier="UpdateSegue" id="MUL-JR-Ll4"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="972" y="31.934032983508249"/>
+            <point key="canvasLocation" x="793" y="586"/>
         </scene>
         <!--Services-->
         <scene sceneID="pHH-Sr-N9F">
@@ -247,6 +248,58 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="R5x-VN-gIw" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1720.8" y="31.934032983508249"/>
+        </scene>
+        <!--Update Controller-->
+        <scene sceneID="fiV-MU-iCg">
+            <objects>
+                <viewController id="XMu-hn-Tlu" customClass="UpdateController" customModule="BLEBrowser" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="j9p-cf-lbz" customClass="UpdateCell" customModule="BLEBrowser" customModuleProvider="target">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="Eh1-o4-Sk9">
+                                <rect key="frame" x="5" y="84" width="365" height="45"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="45" id="NMp-Vp-MmC"/>
+                                </constraints>
+                                <nil key="textColor"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits"/>
+                            </textField>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="O6g-eD-Sim">
+                                <rect key="frame" x="149.5" y="151" width="75" height="40"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="40" id="Cgi-6N-mCH"/>
+                                    <constraint firstAttribute="width" constant="75" id="YTg-Hj-Zo5"/>
+                                </constraints>
+                                <state key="normal" title="Update"/>
+                                <connections>
+                                    <action selector="updateBtnTapped:" destination="XMu-hn-Tlu" eventType="touchUpInside" id="s7x-w9-GjL"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstItem="O6g-eD-Sim" firstAttribute="centerX" secondItem="Eh1-o4-Sk9" secondAttribute="centerX" id="7un-8C-i81"/>
+                            <constraint firstItem="Eh1-o4-Sk9" firstAttribute="top" secondItem="zAh-ui-hQT" secondAttribute="top" constant="20" id="IbV-sv-heO"/>
+                            <constraint firstItem="O6g-eD-Sim" firstAttribute="top" secondItem="Eh1-o4-Sk9" secondAttribute="bottom" constant="22" id="kYs-Sc-FIb"/>
+                            <constraint firstItem="zAh-ui-hQT" firstAttribute="trailing" secondItem="Eh1-o4-Sk9" secondAttribute="trailing" constant="5" id="q3r-qw-Zcz"/>
+                            <constraint firstItem="Eh1-o4-Sk9" firstAttribute="leading" secondItem="zAh-ui-hQT" secondAttribute="leading" constant="5" id="ss4-YM-gRf"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="zAh-ui-hQT"/>
+                        <connections>
+                            <outlet property="titleTextField" destination="Eh1-o4-Sk9" id="N5v-Bs-V3D"/>
+                        </connections>
+                    </view>
+                    <connections>
+                        <outlet property="UpdateView" destination="j9p-cf-lbz" id="wUV-k8-vnc"/>
+                        <outlet property="submitButton" destination="O6g-eD-Sim" id="DqC-Hd-XsP"/>
+                        <outlet property="titleText" destination="Eh1-o4-Sk9" id="MUC-oH-f80"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="vDQ-zU-5JY" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1720.8" y="737.18140929535241"/>
         </scene>
         <!--Characteristics-->
         <scene sceneID="SIl-w7-gw7">
@@ -407,7 +460,7 @@
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="PWX-vf-8cu" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="127" y="32"/>
+            <point key="canvasLocation" x="-135" y="449"/>
         </scene>
     </scenes>
 </document>
