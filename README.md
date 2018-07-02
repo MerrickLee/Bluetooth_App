@@ -1,6 +1,6 @@
 # BleuLee Bluetooth App 
 
-Bluetooth devices browser for iOS
+Bluetooth device browser and changer I made for Cody 
 
 ### Application’s features:
 
